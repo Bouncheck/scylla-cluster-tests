@@ -341,7 +341,7 @@ class CassandraStressThread(DockerBasedStressThread):  # pylint: disable=too-man
         node_cmd = f'echo {tag}; {node_cmd}'
 
         result = None
-        self._disable_logging_for_cs(loader, cmd_runner)
+        #self._disable_logging_for_cs(loader, cmd_runner)
 
         with cleanup_context, \
                 CassandraStressExporter(instance_name=cmd_runner_name,
@@ -362,9 +362,11 @@ class CassandraStressThread(DockerBasedStressThread):  # pylint: disable=too-man
             publisher.event_id = cs_stress_event.event_id
             try:
                 # prolong timeout by 10% to avoid killing cassandra-stress process
-                hard_timeout = self.timeout + int(self.timeout * 0.1)
+                hard_timeout = self.timeout + int(self.timeout * 0.1) + 62
+                LOGGER.info("hardtimeout: {}".format(hard_timeout))
                 # prolong soft timeout by 5%
-                soft_timeout = self.timeout + int(self.timeout * 0.05)
+                soft_timeout = self.timeout + int(self.timeout * 0.05) + 31
+                LOGGER.info("softtimeout: {}".format(soft_timeout))
                 with SoftTimeoutContext(timeout=soft_timeout, operation="cassandra-stress"):
                     result = cmd_runner.run(cmd=node_cmd, timeout=hard_timeout, log_file=log_file_name, retry=0)
             except Exception as exc:  # pylint: disable=broad-except
