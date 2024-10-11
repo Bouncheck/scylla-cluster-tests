@@ -29,6 +29,7 @@ from uuid import uuid4
 from functools import wraps, cache
 import threading
 import signal
+import subprocess
 import json
 
 import botocore
@@ -2294,8 +2295,28 @@ class ClusterTester(db_stats.TestStatsMixin, unittest.TestCase):  # pylint: disa
     def kill_stress_thread(self):
         if self.loaders:  # the test can fail on provision step and loaders are still not provisioned
             self.loaders.kill_stress_thread()
+            
+    def get_pids(self):
+        try:
+            result = subprocess.run(['jps'], stdout=subprocess.PIPE, text=True, check=True)
+            lines = result.stdout.strip().split('\n')
+            pids = [line.split()[0] for line in lines if line]
+            return pids
+        except subprocess.CalledProcessError as e:
+            print(f"Error getting jvm pids: {e}")
+            return []
+
+    def print_jstack(self, pid):
+        try:
+            result = subprocess.run(['jstack', '-l', '-e', pid], stdout=subprocess.PIPE, text=True, check=True)
+            print(f"jstack output for PID {pid}:\n{result.stdout}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error running jstack for PID {pid}: {e}")
 
     def verify_stress_thread(self, cs_thread_pool):
+        pids = self.get_pids()
+        for pid in pids:
+            self.print_jstack(pid)
         if isinstance(cs_thread_pool, dict):
             results = self.get_stress_results_bench(queue=cs_thread_pool)
             errors = []
@@ -2314,6 +2335,8 @@ class ClusterTester(db_stats.TestStatsMixin, unittest.TestCase):  # pylint: disa
         if errors:
             self.log.warning("cassandra-stress errors on nodes:\n%s", "\n".join(errors))
         return results and not errors
+
+
 
     def get_stress_results(self, queue, store_results=True) -> list[dict | None]:
         results = queue.get_results()
