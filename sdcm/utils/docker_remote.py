@@ -99,9 +99,31 @@ class RemoteDocker(BaseNode):
         return external_port.splitlines()[0]
 
     def get_log(self):
+        print("pdebug running docker_remote get_log")
         return self.node.remoter.run(f"{self.sudo_needed} docker logs {self.docker_id}").stdout.strip()
 
     def run(self, cmd, *args, **kwargs):
+        print("pdebug running docker_remote run")
+        try:
+            print("pdebug docker_remote run cmd: ", cmd)
+        except Exception as e:
+            print("pdebug could not print docker_remote cmd of type:", type(cmd))
+
+        print("pdebug Positional arguments:")
+        for arg in args:
+            try:
+                print(arg)
+            except Exception as e:
+                print("pdebug Could not print argument due to an error:", e)
+
+        # Print keyword arguments
+        print("pdebug \nKeyword arguments:")
+        for key, value in kwargs.items():
+            try:
+                print(f"{key}: {value}")
+            except Exception as e:
+                print(f"Could not print argument {key} due to an error:", e)
+
         return self.node.remoter.run(f'{self.sudo_needed} docker exec {self.docker_id} /bin/sh -c {shlex.quote(cmd)}', *args, **kwargs)
 
     def kill(self):

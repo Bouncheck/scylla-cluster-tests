@@ -169,6 +169,7 @@ class LongevityTest(ClusterTester, loader_utils.LoaderUtilsMixin):
             self.partitions_attrs.collect_initial_partitions_info()
 
         stress_cmd = self.params.get('stress_cmd')
+        print("pdebug test custom time presumably before running stress")
         self.assemble_and_run_all_stress_cmd(stress_queue, stress_cmd, keyspace_num)
 
         customer_profiles = self.params.get('cs_user_profiles')
@@ -194,11 +195,13 @@ class LongevityTest(ClusterTester, loader_utils.LoaderUtilsMixin):
             self.db_cluster.wait_total_space_used_per_node(keyspace=None)
             self.db_cluster.start_nemesis()
 
+        print("pdebug test custom time presumably after starting stress writes")
         stress_read_cmd = self.params.get('stress_read_cmd')
         if stress_read_cmd:
             params = {'keyspace_num': keyspace_num, 'stress_cmd': stress_read_cmd}
             self._run_all_stress_cmds(stress_queue, params)
 
+        print("pdebug test custom time presumably after starting all stress reads/writes")
         for stress in stress_queue:
             self.verify_stress_thread(cs_thread_pool=stress)
 

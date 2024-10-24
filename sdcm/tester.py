@@ -2293,14 +2293,24 @@ class ClusterTester(db_stats.TestStatsMixin, unittest.TestCase):  # pylint: disa
             self.loaders.kill_stress_thread()
 
     def verify_stress_thread(self, cs_thread_pool):
+        print("pdebug running tester.py verify_stress_thread")
         if isinstance(cs_thread_pool, dict):
             results = self.get_stress_results_bench(queue=cs_thread_pool)
             errors = []
         else:
             results, errors = cs_thread_pool.verify_results()
+        try:
+            print("pdebug verify_stress_thread results: ", results)
+            print("pdebug verify_stress_thread errors: ", errors)
+        except Exception as e:
+            print("pdebug tester.py verify_stress_thread could not print results and errors")
+            print("results type: ", type(results))
+            print("errors type: ", type(errors))
         if results and self.create_stats:
+            print("pdebug tester.py verify_stress_thread there are results")
             self.update_stress_results(results)
         if not results:
+            print("pdebug tester.py verify_stress_thread if not results. there is no stress results")
             self.log.warning('There is no stress results, probably stress thread has failed.')
         # Sometimes, we might have an epic error messages list
         # that will make small machines driving the test
@@ -2309,6 +2319,11 @@ class ClusterTester(db_stats.TestStatsMixin, unittest.TestCase):  # pylint: disa
         # use the last 5 lines for the final error message.
         errors = errors[-5:]
         if errors:
+            try:
+                print("pdebug tester.py verify_stress_thread errors: ", errors)
+            except Exception as e:
+                print("pdebug verify_stress_thread errors unprintable")
+                print("pdebug errors type: ", type(errors))
             self.log.warning("cassandra-stress errors on nodes:\n%s", "\n".join(errors))
         return results and not errors
 

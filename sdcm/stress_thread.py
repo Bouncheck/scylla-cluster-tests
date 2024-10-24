@@ -383,15 +383,26 @@ class CassandraStressThread(DockerBasedStressThread):  # pylint: disable=too-man
     def get_results(self) -> list[dict | None]:
         ret = []
         results = super().get_results()
-
+        print("pdebug called stress_thread.py get_results()")
+        try:
+            print("results: ", results)
+        except Exception as e:
+            print("pdebug exception, couldnt print results")
+            print("results type ", type(results))
         for _, result, event in results:
             if not result:
+                print("pdebug stress_thread.py; get_results; if not result")
                 # Silently skip if stress command threw error, since it was already reported in _run_stress
                 continue
             output = result.stdout + result.stderr
             try:
                 lines = output.splitlines()
                 node_cs_res = BaseLoaderSet._parse_cs_summary(lines)  # pylint: disable=protected-access
+                try:
+                    print("pdebug get_results node_cs_res:", node_cs_res)
+                except Exception as e:
+                    print("pdebug exception get_results , couldnt print node_cs_res")
+                    print("get_results node_cs_res type ", type(node_cs_res))
                 if node_cs_res:
                     ret.append(node_cs_res)
             except Exception as exc:  # pylint: disable=broad-except  # noqa: BLE001
@@ -404,16 +415,22 @@ class CassandraStressThread(DockerBasedStressThread):  # pylint: disable=too-man
     def verify_results(self) -> (list[dict | None], list[str | None]):
         cs_summary = []
         errors = []
-
+        print("pdebug called stress_thread.py verify_results()")
         results = super().get_results()
 
         for node, result, _ in results:
             if not result:
+                print("pdebug stress_thread.py verify_results() if not result")
                 # Silently skip if stress command threw error, since it was already reported in _run_stress
                 continue
             output = result.stdout + result.stderr
             lines = output.splitlines()
             node_cs_res = BaseLoaderSet._parse_cs_summary(lines)  # pylint: disable=protected-access
+            try:
+                print("pdebug verify_results node_cs_res:", node_cs_res)
+            except Exception as e:
+                print("pdebug exception verify_results , couldnt print node_cs_res")
+                print("verify_results node_cs_res type ", type(node_cs_res))
             if node_cs_res:
                 cs_summary.append(node_cs_res)
             for line in lines:
