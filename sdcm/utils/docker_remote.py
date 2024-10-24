@@ -105,6 +105,11 @@ class RemoteDocker(BaseNode):
     def run(self, cmd, *args, **kwargs):
         print("pdebug running docker_remote run")
         try:
+            print("pdebug docker_remote run self: ", self)
+            print("pdebug docker_remote run type(self): ", type(self))
+        except Exception as e:
+            print("pdebug could not print docker_remote run self:", type(self))
+        try:
             print("pdebug docker_remote run cmd: ", cmd)
         except Exception as e:
             print("pdebug could not print docker_remote cmd of type:", type(cmd))
@@ -124,6 +129,17 @@ class RemoteDocker(BaseNode):
             except Exception as e:
                 print(f"Could not print argument {key} due to an error:", e)
 
+        try:
+            print("pdebug docker_remote self.node.remoter: ", self.node.remoter)
+            print("pdebug type self.node.remoter: ", type(self.node.remoter))
+        except Exception as e:
+            print("pdebug could not print self.node.remoter: ", type(self.node.remoter))
+
+        try:
+            print("pdebug docker_remote self.node: ", self.node)
+            print("pdebug type self.node: ", type(self.node))
+        except Exception as e:
+            print("pdebug could not print self.node: ", type(self.node))
         return self.node.remoter.run(f'{self.sudo_needed} docker exec {self.docker_id} /bin/sh -c {shlex.quote(cmd)}', *args, **kwargs)
 
     def kill(self):

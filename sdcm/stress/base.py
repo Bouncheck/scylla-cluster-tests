@@ -87,12 +87,14 @@ class DockerBasedStressThread:  # pylint: disable=too-many-instance-attributes
         raise NotImplementedError()
 
     def get_results(self):
+        print("pdebug called get_results in stress/base.py")
         results = []
         timeout = self.hard_timeout + 120
         LOGGER.debug('Wait for %s stress threads results', self.max_workers)
         for future in concurrent.futures.as_completed(self.results_futures, timeout=timeout):
             results.append(future.result())
 
+        print("pdebug returning from get_results in stress/base.py")
         return results
 
     def verify_results(self):
