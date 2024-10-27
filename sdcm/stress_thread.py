@@ -327,9 +327,9 @@ class CassandraStressThread(DockerBasedStressThread):  # pylint: disable=too-man
         tag = f'TAG: loader_idx:{loader_idx}-cpu_idx:{cpu_idx}-keyspace_idx:{keyspace_idx}'
 
         if self.stress_num > 1:
-            node_cmd = f'STRESS_TEST_MARKER={self.shell_marker}; taskset -c {cpu_idx} {stress_cmd}'
+            node_cmd = f'STRESS_TEST_MARKER={self.shell_marker}; taskset -c {cpu_idx} {stress_cmd}; echo $? > /tmp/command_status'
         else:
-            node_cmd = f'STRESS_TEST_MARKER={self.shell_marker}; {stress_cmd}'
+            node_cmd = f'STRESS_TEST_MARKER={self.shell_marker}; {stress_cmd}; echo $? > /tmp/command_status'
         node_cmd = f'echo {tag}; {node_cmd}'
 
         result = None
