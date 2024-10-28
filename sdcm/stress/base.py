@@ -35,9 +35,9 @@ class DockerBasedStressThread:  # pylint: disable=too-many-instance-attributes
         self.stress_cmd = stress_cmd
         self.timeout = timeout
         # prolong timeout by 10% to avoid killing stress process
-        self.hard_timeout = self.timeout + int(self.timeout * 2.1)
+        self.hard_timeout = self.timeout + int(self.timeout * 0.1)
         # prolong soft timeout by 5%
-        self.soft_timeout = self.timeout + int(self.timeout * 2.05)
+        self.soft_timeout = self.timeout + int(self.timeout * 0.05)
 
         self.stress_num = stress_num
         self.node_list = node_list or []
