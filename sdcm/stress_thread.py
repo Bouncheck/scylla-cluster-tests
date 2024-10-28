@@ -49,6 +49,12 @@ class CassandraStressEventsPublisher(FileFollowerThread):
         self.stop_test_on_failure = stop_test_on_failure
 
     def run(self) -> None:
+        try:
+            print("pdebug Running cassandrastresseventspublisher with cs_log_filename: ", self.cs_log_filename, "\n")
+        except Exception as e:
+            print("pdebug Could not print cs_log_filename\n")
+        print("pdebug type(cs_log_filename): ", type(self.cs_log_filename), "\n")
+
         while not self.stopped():
             if not os.path.isfile(self.cs_log_filename):
                 time.sleep(0.5)
