@@ -40,12 +40,16 @@ class RemoteLibSSH2CmdRunner(RemoteCmdRunnerBase, ssh_transport='libssh2'):  # p
     )
 
     def _create_connection(self) -> LibSSH2Client:
+        try:
+            print(f"_create_connection in ssh2runner hostname:{self.hostname}, user:{self.user}, port:{self.port}, connect_timeout:{self.connect_timeout}")
+        except Exception as e:
+            print(f"Could not print something due to {e}")
         return LibSSH2Client(
             host=self.hostname,
             user=self.user,
             port=self.port,
             pkey=os.path.expanduser(self.key_file),
-            timings=Timings(keepalive_timeout=0, connect_timeout=self.connect_timeout)
+            timings=Timings(keepalive_timeout=120, connect_timeout=self.connect_timeout)
         )
 
     def is_up(self, timeout: float = 30) -> bool:
