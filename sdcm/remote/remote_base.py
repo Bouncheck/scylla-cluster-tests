@@ -634,6 +634,7 @@ class RemoteCmdRunnerBase(CommandRunner):  # pylint: disable=too-many-instance-a
           for example group has been added to the user.
         :return:
         """
+        """
         print("rdebug Running remote_base.py run")
         try:
             print("rdebug remote_base running cmd of type", type(cmd))
@@ -651,6 +652,7 @@ class RemoteCmdRunnerBase(CommandRunner):  # pylint: disable=too-many-instance-a
             print("rdebug type watchers ", type(watchers))
         except Exception as e:
             print("rdebug failed to print watchers ", type(watchers))
+        """
 
         @retrying(**self._get_retry_params(retry))
         def _run():

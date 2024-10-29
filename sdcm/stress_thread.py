@@ -64,14 +64,14 @@ class CassandraStressEventsPublisher(FileFollowerThread):
                 if self.stopped():
                     break
 
-                print(f"Considering line no {line_number}: {line}\n")
+                #print(f"Considering line no {line_number}: {line}\n")
                 for pattern, event in chain(CS_NORMAL_EVENTS_PATTERNS, CS_ERROR_EVENTS_PATTERNS):
                     if self.event_id:
                         # Connect the event to the stress load
                         event.event_id = self.event_id
 
                     if pattern.search(line):
-                        print(f"{line_number} matches pattern {pattern} w event {event}\n")
+                        #print(f"{line_number} matches pattern {pattern} w event {event}\n")
                         if event.severity == Severity.CRITICAL and not self.stop_test_on_failure:
                             event = event.clone()  # so we don't change the severity to other stress threads  # noqa: PLW2901
                             event.severity = Severity.ERROR
